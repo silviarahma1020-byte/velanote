@@ -9,6 +9,7 @@ interface TasksContextValue {
   addTask: (title: string, subject: string, priority: Priority, deadline: string) => void;
   toggleDone: (id: number) => void;
   deleteTask: (id: number) => void;
+  deleteTasks: (ids: Set<number>) => void;
 }
 
 const TasksContext = createContext<TasksContextValue | null>(null);
@@ -68,8 +69,13 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     supabase.from("tasks").delete().eq("id", id).then();
   };
 
+  const deleteTasks = (ids: Set<number>) => {
+    setTasks((prev) => prev.filter((t) => !ids.has(t.id)));
+    supabase.from("tasks").delete().in("id", Array.from(ids)).then();
+  };
+
   return (
-    <TasksContext.Provider value={{ tasks, addTask, toggleDone, deleteTask }}>
+    <TasksContext.Provider value={{ tasks, addTask, toggleDone, deleteTask, deleteTasks }}>
       {children}
     </TasksContext.Provider>
   );
