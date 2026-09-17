@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import BrandMark from "@/components/layout/Brandmark";
 
 function GoogleIcon() {
   return (
@@ -61,8 +62,8 @@ export default function LoginPage() {
 
   return (
     <div className="auth-card">
-      <div className="auth-logo">Velanote</div>
-      <h1 className="auth-title">Masuk ke Velanote</h1>
+      <div className="auth-logo-wrap"><BrandMark size={64} /></div>
+      <h1 className="auth-title">Masuk</h1>
       <p className="auth-subtitle">Fokus, satu layar</p>
 
       {needsConfirm ? (

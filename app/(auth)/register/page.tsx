@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import BrandMark from "@/components/layout/Brandmark";
 
 function GoogleIcon() {
   return (
@@ -48,7 +49,7 @@ export default function RegisterPage() {
   if (done) {
     return (
       <div className="auth-card">
-        <div className="auth-logo">Velanote</div>
+        <div className="auth-logo-wrap"><BrandMark size={64} /></div>
         <h1 className="auth-title">Cek email kamu</h1>
         <p className="auth-subtitle">Kami sudah kirim link konfirmasi ke <b>{email}</b>. Klik link itu dulu sebelum bisa masuk.</p>
         <Link href="/login" className="auth-btn-primary" style={{ display: "block", textAlign: "center", textDecoration: "none" }}>
@@ -60,8 +61,8 @@ export default function RegisterPage() {
 
   return (
     <div className="auth-card">
-      <div className="auth-logo">Velanote</div>
-      <h1 className="auth-title">Daftar Velanote</h1>
+      <div className="auth-logo-wrap"><BrandMark size={64} /></div>
+      <h1 className="auth-title">Daftar</h1>
       <p className="auth-subtitle">Gratis — mulai atur jadwal & catatanmu</p>
 
       <button type="button" className="auth-btn-google" onClick={handleGoogle}><GoogleIcon /> Daftar dengan Google</button>

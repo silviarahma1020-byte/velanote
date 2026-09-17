@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
+const PUBLIC_PATHS = ["/login", "/register", "/auth"];
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -23,14 +25,20 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser();
   const path = request.nextUrl.pathname;
-  const isAuthPage = path.startsWith("/login") || path.startsWith("/register") || path.startsWith("/auth");
 
-  if (!user && !isAuthPage) {
+  // REVISI: cek path PUBLIC dulu, cari via .some(), lebih aman daripada
+  // beberapa .startsWith() yang dirangkai — supaya tidak ada kemungkinan
+  // salah satu path (misal /register) kelewat/kepotong.
+  const isPublicPath = PUBLIC_PATHS.some((p) => path.startsWith(p));
+
+  console.log("[middleware]", path, "| user:", !!user, "| isPublicPath:", isPublicPath);
+
+  if (!user && !isPublicPath) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
-  if (user && isAuthPage) {
+  if (user && isPublicPath) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
