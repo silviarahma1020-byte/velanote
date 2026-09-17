@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import BrandMark from "@/components/layout/Brandmark";
+import BrandMark from "@/components/layout/BrandMark";
 
 function GoogleIcon() {
   return (
