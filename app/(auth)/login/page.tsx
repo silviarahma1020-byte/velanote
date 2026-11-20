@@ -90,7 +90,7 @@ export default function LoginPage() {
       <div className="auth-divider"><span>atau masuk dengan</span></div>
       <button type="button" className="auth-btn-google" onClick={handleGoogle}><GoogleIcon /> Lanjutkan dengan Google</button>
 
-      <p className="auth-footer">Belum punya akun? <Link href="/register">Daftar gratis</Link></p>
+      <p className="auth-footer">Belum punya akun? <a href="/register">Daftar gratis</a></p>
     </div>
   );
 }
