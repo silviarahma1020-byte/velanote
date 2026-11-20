@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import BrandMark from "@/components/layout/BrandMark";
@@ -17,6 +18,7 @@ function GoogleIcon() {
 
 export default function RegisterPage() {
   const supabase = createClient();
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,14 +31,24 @@ export default function RegisterPage() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: name } },
-    });
-    setLoading(false);
-    if (signUpError) { setError(signUpError.message); return; }
-    setDone(true);
+    const { data, error: signUpError } = await supabase.auth.signUp({
+  email,
+  password,
+  options: {
+    data: { full_name: name },
+    emailRedirectTo: `${window.location.origin}/auth/callback`,
+  },
+});
+setLoading(false);
+if (signUpError) { setError(signUpError.message); return; }
+
+if (data.user && data.user.identities?.length === 0) {
+  setError("Email ini sudah terdaftar. Coba masuk atau gunakan Google.");
+  return;
+}
+
+if (data.session) { router.push("/dashboard"); return; } 
+setDone(true);
   }
 
   async function handleGoogle() {
@@ -75,7 +87,7 @@ export default function RegisterPage() {
         <input type="email" className="auth-input" placeholder="email@contoh.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <label className="auth-label">Password</label>
         <div className="auth-input-wrap">
-          <input type={showPassword ? "text" : "password"} className="auth-input" placeholder="Minimal 6 karakter" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
+          <input type={showPassword ? "text" : "password"} className="auth-input" placeholder="Minimal 8 karakter" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
           <button type="button" className="auth-eye" onClick={() => setShowPassword((v) => !v)} aria-label="Tampilkan password">{showPassword ? "🙈" : "👁"}</button>
         </div>
         {error && <div className="auth-error">{error}</div>}
